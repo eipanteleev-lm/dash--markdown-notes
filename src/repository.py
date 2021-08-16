@@ -10,7 +10,7 @@ def note(path: str) -> str:
     if not os.path.exists(fullpath):
         return None
 
-    with open(fullpath) as f:
+    with open(fullpath, encoding='utf-8') as f:
         md = f.read()
 
     return md
@@ -19,7 +19,7 @@ def note(path: str) -> str:
 def template(name: str) -> str:
     fullpath = os.path.join("templates", f"{name}.md")
 
-    with open(fullpath) as f:
+    with open(fullpath, encoding='utf-8') as f:
         md = f.read()
 
     return md
@@ -46,7 +46,7 @@ def add_note_directory(path: str, name: str) -> str:
 def add_note(path: str, md: str):
     fullpath = os.path.join(utils.webpath_to_notepath(path), "note.md")
 
-    with open(fullpath, 'w') as f:
+    with open(fullpath, 'w', encoding='utf-8') as f:
         f.write(md)
 
     return path
@@ -55,7 +55,7 @@ def add_note(path: str, md: str):
 def add_file(path: str, contents: str, filename: str) -> str:
     fullpath = os.path.join(utils.webpath_to_notepath(path), filename)
 
-    with open(fullpath, 'wb') as f:
+    with open(fullpath, 'wb', encoding='utf-8') as f:
         f.write(contents)
 
     return path
