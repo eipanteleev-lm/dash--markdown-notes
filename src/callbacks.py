@@ -159,7 +159,16 @@ def open_delete_modal(n_clicks1, n_clicks2, n_clicks3, is_open):
     State('url', 'pathname'),
     prevent_initial_call=True
 )
-def upload_page(n_clicks, pathname):
+def delete_page(n_clicks, pathname):
+    if pathname == '/':
+        return layout.alert(
+            (
+                "Are you sure you want to delete the home page?"
+                + "We can't let you do that."
+            ),
+            "danger"
+        )
+
     repo.delete_note(pathname)
     return layout.alert("Pages successfully deleted", "success")
 
