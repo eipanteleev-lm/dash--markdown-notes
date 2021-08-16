@@ -8,4 +8,4 @@ app.layout = layout.main()
 
 
 if __name__ == "__main__":
-    app.run_server(HOST, PORT, debug=True)
+    app.run_server(HOST, PORT)
