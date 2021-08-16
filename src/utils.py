@@ -1,12 +1,25 @@
 import base64
 import os
+from urllib.parse import unquote
 
 import config
 
 
 def webpath_to_notepath(path: str) -> str:
-    pathlist = path.strip('/').split('/')
+    pathlist = unquote(path).strip('/').split('/')
     return os.path.join(config.NOTES_PATH, *pathlist)
+
+
+def web_path_bread_crumps(path: str) -> list:
+    bread_crumps = [("root", "/")]
+
+    pathlist = unquote(path).strip('/').split('/')
+    href = ''
+    for link in pathlist:
+        href += '/' + link
+        bread_crumps.append((link, href))
+
+    return bread_crumps
 
 
 def parse_note_file(contents, filename):

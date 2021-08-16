@@ -29,16 +29,7 @@ def render_page_content(pathname):
     Input('url', 'pathname')
 )
 def render_bread_crumbs(pathname):
-    links = [("root", "/")]
-    if pathname == '/':
-        return layout.bread_crumbs(links)
-
-    pathlist = pathname.strip('/').split('/')
-    href = ''
-    for link in pathlist:
-        href += '/' + link
-        links.append((link, href))
-    
+    links = utils.web_path_bread_crumps(pathname)
     return layout.bread_crumbs(links)
 
 
@@ -164,7 +155,7 @@ def delete_page(n_clicks, pathname):
         return layout.alert(
             (
                 "Are you sure you want to delete the home page?"
-                + "We can't let you do that."
+                + " We can't let you do that."
             ),
             "danger"
         )
