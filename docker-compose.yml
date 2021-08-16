@@ -1,0 +1,12 @@
+version: "3.3"
+
+services:
+  web:
+    build: .
+    container_name: markdown-notes
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./notes:/usr/app/notes:rw"
+    environment:
+      HOST: "0.0.0.0"
