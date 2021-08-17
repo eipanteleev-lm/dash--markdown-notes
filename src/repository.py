@@ -61,6 +61,16 @@ def add_file(path: str, contents: str, filename: str) -> str:
     return path
 
 
+def clear_note(path: str) -> str:
+    fullpath = os.path.join(utils.webpath_to_notepath(path), "note.md")
+
+    if not os.path.exists(fullpath):
+        return None
+
+    os.remove(fullpath)
+    return path
+
+
 def delete_note(path: str) -> str:
     fullpath = os.path.join(utils.webpath_to_notepath(path))
 

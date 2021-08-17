@@ -22,6 +22,7 @@ def main():
                     html.Div(alerts(), id="alerts-wrapper"),
                     html.Div(id='bread-crumbs'),
                     html.Div(control_buttons(), id='control-buttons-wrapper'),
+                    html.Div(clear_page_modal(), id='clear-page-modal-wrapper'),
                     html.Div(delete_page_modal(), id='delete-page-modal-wrapper'),
                     html.Div(add_page_collapse(), id='add-page-collapse-wrapper'),
                     html.Div(id='page-content')
@@ -37,6 +38,7 @@ def alerts():
         html.Div(id={'type': 'alert', 'index': 'upload-file'}),
         html.Div(id={'type': 'alert', 'index': 'add-page'}),
         html.Div(id={'type': 'alert', 'index': 'update-page'}),
+        html.Div(id={'type': 'alert', 'index': 'clear-page'}),
         html.Div(id={'type': 'alert', 'index': 'delete-page'})
     ]
 
@@ -82,8 +84,15 @@ def control_buttons():
             className="mr-2 mt-2 mb-2"
         ),
         dbc.Button(
+            "Clear page",
+            id={"type": "modal-button", "index": "clear-page"},
+            outline=True,
+            color="secondary",
+            className="mr-2 mt-2 mb-2"
+        ),
+        dbc.Button(
             "Delete pages",
-            id='delete-page-modal-button',
+            id={"type": "modal-button", "index": "delete-page"},
             outline=True,
             color="danger",
             className="mr-2 mt-2 mb-2"
@@ -119,6 +128,28 @@ def add_page_collapse():
     )
 
 
+def clear_page_modal():
+    return dbc.Modal(
+        [
+            dbc.ModalHeader("Clear page"),
+            dbc.ModalBody("All the information will be removed from this page."),
+            dbc.ModalFooter([
+                dbc.Button(
+                    "Cancel",
+                    id={"type": "cancel-button", "index": "clear-page"},
+                    className="mr-2"
+                ),
+                dbc.Button(
+                    "Clear",
+                    id={"type": "accept-button", "index": "clear-page"}
+                )
+            ]),
+        ],
+        id={"type": "action-modal", "index": "clear-page"},
+        is_open=False,
+    )
+
+
 def delete_page_modal():
     return dbc.Modal(
         [
@@ -127,16 +158,16 @@ def delete_page_modal():
             dbc.ModalFooter([
                 dbc.Button(
                     "Cancel",
-                    id="cancel-delete-page-button",
+                    id={"type": "cancel-button", "index": "delete-page"},
                     className="mr-2"
                 ),
                 dbc.Button(
                     "Delete",
-                    id="delete-page-button"
+                    id={"type": "accept-button", "index": "delete-page"}
                 )
             ]),
         ],
-        id="delete-page-modal",
+        id={"type": "action-modal", "index": "delete-page"},
         is_open=False,
     )
 
@@ -146,21 +177,18 @@ def slidebar_layout(tree):
         html.H2("Contents"),
         html.Hr(),
         html.Div(
-            dbc.Nav(
-                html.Div([
-                    dbc.NavLink(
-                        html.H5('root'),
-                        href='/',
-                        active="exact",
-                        className='pb-0 pt-0'
-                    ),
-                    html.Div(
-                        slidebar_tree(tree, ''),
-                        className='pl-4 pb-0 pt-0'
-                    )
-                ]),
-                pills=True
-            )
+            dbc.Nav([
+                dbc.NavLink(
+                    html.H5('root'),
+                    href='/',
+                    active="exact",
+                    className='pb-0 pt-0'
+                ),
+                html.Div(
+                    slidebar_tree(tree, ''),
+                    className='pl-3 pb-0 pt-0'
+                )
+            ])
         )
     ])
 
@@ -179,7 +207,7 @@ def slidebar_tree(tree, path):
                     entry_children,
                     path + '/' + entry_name
                 ),
-                className='pl-4 pb-0 pt-0'
+                className='pl-3 pb-0 pt-0'
             )
         ])
         for entry_name, entry_children in tree

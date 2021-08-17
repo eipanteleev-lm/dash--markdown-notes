@@ -2,7 +2,7 @@ from config import app
 
 import dash_core_components as dcc
 
-from dash.dependencies import ALL, Input, Output, State
+from dash.dependencies import ALL, MATCH, Input, Output, State
 
 import layout
 
@@ -131,22 +131,45 @@ def download_page(n_clicks, pathname):
 
 
 @app.callback(
-    Output('delete-page-modal', 'is_open'),
+    Output({"type": "action-modal", "index": MATCH}, 'is_open'),
     [
-        Input('delete-page-button', 'n_clicks'),
-        Input('cancel-delete-page-button', 'n_clicks'),
-        Input('delete-page-modal-button', 'n_clicks')
+        Input({"type": "accept-button", "index": MATCH}, 'n_clicks'),
+        Input({"type": "cancel-button", "index": MATCH}, 'n_clicks'),
+        Input({"type": "modal-button", "index": MATCH}, 'n_clicks')
     ],
-    State('delete-page-modal', 'is_open'),
+    State({"type": "action-modal", "index": MATCH}, 'is_open'),
     prevent_initial_call=True
 )
-def open_delete_modal(n_clicks1, n_clicks2, n_clicks3, is_open):
+def open_modal(n_clicks1, n_clicks2, n_clicks3, is_open):
     return not is_open
 
 
 @app.callback(
+    Output({'type': 'alert', 'index': 'clear-page'}, 'children'),
+    Input({"type": "accept-button", "index": "clear-page"}, 'n_clicks'),
+    State('url', 'pathname'),
+    prevent_initial_call=True
+)
+def delete_page(n_clicks, pathname):
+    if pathname == '/':
+        return layout.alert(
+            (
+                "Are you sure you want to clear the home page?"
+                + " We can't let you do that."
+            ),
+            "danger"
+        )
+
+    repo.clear_note(pathname)
+    
+    template = repo.template('default')
+    repo.add_note(pathname, template)
+    return layout.alert("Page successfully cleared", "success")
+
+
+@app.callback(
     Output({'type': 'alert', 'index': 'delete-page'}, 'children'),
-    Input('delete-page-button', 'n_clicks'),
+    Input({"type": "accept-button", "index": "delete-page"}, 'n_clicks'),
     State('url', 'pathname'),
     prevent_initial_call=True
 )
