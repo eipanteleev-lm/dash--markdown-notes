@@ -5,9 +5,12 @@ import dash
 import dash_bootstrap_components as dbc
 
 
+assets_folder = './assets'
+
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
+    assets_folder=assets_folder,
     title='Markdown Notes'
 )
 
@@ -23,13 +26,15 @@ SIDEBAR_STYLE = {
     "width": "16rem",
     "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
-    "overflow": "auto"
+    "overflow": "auto",
+    "white-space": "nowrap"
 }
 
 CONTENT_STYLE = {
     "margin-left": "18rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
+    "overflow": "auto"
 }
 
 NOTES_PATH = 'notes'
