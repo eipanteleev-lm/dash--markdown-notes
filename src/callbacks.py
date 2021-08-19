@@ -13,9 +13,12 @@ import utils
 
 @app.callback(
     Output('page-content', 'children'),
-    Input('url', 'pathname')
+    [
+        Input('url', 'pathname'),
+        Input('interval', 'n_intervals')
+    ]
 )
-def render_page_content(pathname):
+def render_page_content(pathname, n_intervals):
     md = repo.note(pathname)
     if md is None:
         template = repo.template('404')
@@ -35,9 +38,12 @@ def render_bread_crumbs(pathname):
 
 @app.callback(
     Output('slidebar', 'children'),
-    Input('url', 'pathname')
+    [
+        Input('url', 'pathname'),
+        Input('interval', 'n_intervals')
+    ]
 )
-def render_slidebar(pathname):
+def render_slidebar(pathname, n_intervals):
     tree = repo.notes_tree()
     return layout.slidebar_layout(tree)
 

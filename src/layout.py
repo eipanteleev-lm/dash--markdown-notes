@@ -13,6 +13,7 @@ def main():
         id='main-page',
         children=[
             dcc.Location(id='url', refresh=False),
+            dcc.Interval(id='interval', interval=3000),
             html.Div(
                 id='slidebar',
                 style=config.SIDEBAR_STYLE
@@ -173,45 +174,47 @@ def delete_page_modal():
 
 
 def slidebar_layout(tree):
+    children = slidebar_tree(tree, '')
+    slidebar = dcc.Link('root', href='/')
+    if children:
+        slidebar = html.Details([
+            html.Summary(slidebar),
+            html.Div(
+                slidebar_tree(tree, ''),
+                className="ml-4"
+            )
+        ])
+
     return html.Div([
         html.H2("Contents"),
         html.Hr(),
-        html.Div(
-            dbc.Nav([
-                dbc.NavLink(
-                    html.H5('root'),
-                    href='/',
-                    active="exact",
-                    className='pb-0 pt-0'
-                ),
-                html.Div(
-                    slidebar_tree(tree, ''),
-                    className='pl-3 pb-0 pt-0'
-                )
-            ])
-        )
+        html.Div(slidebar)
     ])
 
 
 def slidebar_tree(tree, path):
-    return [
-        html.Div([
-            dbc.NavLink(
-                html.H5('|' + '- ' + entry_name),
-                href=path + '/' + entry_name,
-                active="exact",
-                className='pb-0 pt-0'
-            ),
-            html.Div(
-                slidebar_tree(
-                    entry_children,
-                    path + '/' + entry_name
-                ),
-                className='pl-3 pb-0 pt-0'
-            )
-        ])
-        for entry_name, entry_children in tree
-    ]
+    slidebar_list = []
+    for entry_name, entry_children in tree:
+        slidebar = dcc.Link(
+            entry_name,
+            href=path + '/' + entry_name
+        )
+
+        if entry_children:
+            slidebar = html.Details([
+                html.Summary(slidebar),
+                html.Div(
+                    slidebar_tree(
+                        entry_children,
+                        path + '/' + entry_name
+                    ),
+                    className="ml-4"
+                )
+            ])
+
+        slidebar_list.append(slidebar)
+
+    return slidebar_list
 
 
 def bread_crumbs(links: list):
