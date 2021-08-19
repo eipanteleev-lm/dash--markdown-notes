@@ -13,7 +13,7 @@ def main():
         id='main-page',
         children=[
             dcc.Location(id='url', refresh=False),
-            dcc.Interval(id='interval', interval=3000),
+            dcc.Interval(id='interval', interval=60000),
             html.Div(
                 id='slidebar',
                 style=config.SIDEBAR_STYLE
