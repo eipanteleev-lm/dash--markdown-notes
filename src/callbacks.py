@@ -66,6 +66,15 @@ def refresh_page(children, pathname):
     prevent_initial_call=True
 )
 def upload_page(contents, filename, pathname):
+    if pathname == '/':
+        return layout.alert(
+            (
+                "Are you sure you want to update the home page?"
+                + " We can't let you do that."
+            ),
+            "warning"
+        )
+
     md = utils.parse_note_file(contents, filename)
     path = repo.add_note(pathname, md)
     if path is None:
@@ -93,11 +102,11 @@ def open_page_name_input(n_clicks1, n_clicks2, is_open):
 )
 def add_page(n_clicks, value, pathname):
     if not value:
-        return layout.alert("Could not create page with empty name", "danger")
+        return layout.alert("Could not create page with empty name", "warning")
 
     path = repo.add_note_directory(pathname, value)
     if path is None:
-        return layout.alert("Could not recreate existing page", "danger")
+        return layout.alert("Could not recreate existing page", "warning")
 
     template = repo.template('default')
     repo.add_note(path, template)
@@ -163,7 +172,7 @@ def delete_page(n_clicks, pathname):
                 "Are you sure you want to clear the home page?"
                 + " We can't let you do that."
             ),
-            "danger"
+            "warning"
         )
 
     repo.clear_note(pathname)
@@ -186,7 +195,7 @@ def delete_page(n_clicks, pathname):
                 "Are you sure you want to delete the home page?"
                 + " We can't let you do that."
             ),
-            "danger"
+            "warning"
         )
 
     repo.delete_note(pathname)
