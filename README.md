@@ -1,3 +1,3 @@
 # dash--markdown-notes
 
-Simple markdown server
+Simple markdown notes server
