@@ -173,17 +173,19 @@ def delete_page_modal():
     )
 
 
-def slidebar_layout(tree):
-    children = slidebar_tree(tree, '')
+def slidebar_layout(tree, opened_list):
     slidebar = dcc.Link('root', href='/')
-    if children:
-        slidebar = html.Details([
-            html.Summary(slidebar),
-            html.Div(
-                slidebar_tree(tree, ''),
-                className="ml-4"
-            )
-        ])
+    if tree:
+        slidebar = html.Details(
+            [
+                html.Summary(slidebar),
+                html.Div(
+                    slidebar_tree(tree, '', opened_list),
+                    className="ml-4"
+                )
+            ],
+            open=True
+        )
 
     return html.Div([
         html.H2("Contents"),
@@ -192,8 +194,12 @@ def slidebar_layout(tree):
     ])
 
 
-def slidebar_tree(tree, path):
+def slidebar_tree(tree, path, opened_list):
     slidebar_list = []
+    opened_entry = None
+    if opened_list:
+        opened_entry = opened_list.pop(0)
+
     for entry_name, entry_children in tree:
         slidebar = dcc.Link(
             entry_name,
@@ -201,16 +207,20 @@ def slidebar_tree(tree, path):
         )
 
         if entry_children:
-            slidebar = html.Details([
-                html.Summary(slidebar),
-                html.Div(
-                    slidebar_tree(
-                        entry_children,
-                        path + '/' + entry_name
-                    ),
-                    className="ml-4"
-                )
-            ])
+            slidebar = html.Details(
+                [
+                    html.Summary(slidebar),
+                    html.Div(
+                        slidebar_tree(
+                            entry_children,
+                            path + '/' + entry_name,
+                            (opened_list if opened_list else [])
+                        ),
+                        className="ml-4"
+                    )
+                ],
+                open=(entry_name == opened_entry)
+            )
 
         slidebar_list.append(slidebar)
 
@@ -229,7 +239,7 @@ def bread_crumbs(links: list):
 
 
 def note(md: str):
-    return dcc.Markdown(md)
+    return dcc.Markdown(md, dedent=False)
 
 
 def alert(alert_text: str, alert_type: str):

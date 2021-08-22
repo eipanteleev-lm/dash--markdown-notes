@@ -46,7 +46,7 @@ def add_note_directory(path: str, name: str) -> str:
 def add_note(path: str, md: str):
     fullpath = os.path.join(utils.webpath_to_notepath(path), "note.md")
 
-    with open(fullpath, 'w', encoding='utf-8') as f:
+    with open(fullpath, 'wb') as f:
         f.write(md)
 
     return path
@@ -55,7 +55,7 @@ def add_note(path: str, md: str):
 def add_file(path: str, contents: str, filename: str) -> str:
     fullpath = os.path.join(utils.webpath_to_notepath(path), filename)
 
-    with open(fullpath, 'wb', encoding='utf-8') as f:
+    with open(fullpath, 'wb') as f:
         f.write(contents)
 
     return path

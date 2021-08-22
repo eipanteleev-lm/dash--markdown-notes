@@ -32,7 +32,7 @@ def render_page_content(pathname, n_intervals):
     Input('url', 'pathname')
 )
 def render_bread_crumbs(pathname):
-    links = utils.web_path_bread_crumps(pathname)
+    links = utils.webpath_bread_crumps(pathname)
     return layout.bread_crumbs(links)
 
 
@@ -45,7 +45,8 @@ def render_bread_crumbs(pathname):
 )
 def render_slidebar(pathname, n_intervals):
     tree = repo.notes_tree()
-    return layout.slidebar_layout(tree)
+    pathlist = utils.webpath_to_list(pathname)
+    return layout.slidebar_layout(tree, pathlist)
 
 
 @app.callback(
