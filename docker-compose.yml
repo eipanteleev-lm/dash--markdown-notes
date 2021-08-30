@@ -4,6 +4,7 @@ services:
   web:
     build: .
     container_name: markdown-notes
+    restart: always
     ports:
       - "8080:5000"
     volumes:
