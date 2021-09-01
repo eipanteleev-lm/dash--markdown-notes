@@ -110,7 +110,7 @@ def add_page(n_clicks, value, pathname):
         return layout.alert("Could not recreate existing page", "warning")
 
     template = repo.template('default')
-    repo.add_note(path, template)
+    repo.add_note(path, template.encode('utf-8'))
 
     return layout.alert("Page successfully created", "success")
 
