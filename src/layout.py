@@ -26,6 +26,7 @@ def main():
                     html.Div(clear_page_modal(), id='clear-page-modal-wrapper'),
                     html.Div(delete_page_modal(), id='delete-page-modal-wrapper'),
                     html.Div(add_page_collapse(), id='add-page-collapse-wrapper'),
+                    html.Div(edit_page_collapce(), id='edit-page-collapse-wrapper'),
                     html.Div(id='page-content')
                 ],
                 style=config.CONTENT_STYLE
@@ -40,7 +41,8 @@ def alerts():
         html.Div(id={'type': 'alert', 'index': 'add-page'}),
         html.Div(id={'type': 'alert', 'index': 'update-page'}),
         html.Div(id={'type': 'alert', 'index': 'clear-page'}),
-        html.Div(id={'type': 'alert', 'index': 'delete-page'})
+        html.Div(id={'type': 'alert', 'index': 'delete-page'}),
+        html.Div(id={'type': 'alert', 'index': 'edit-page'})
     ]
 
 
@@ -53,6 +55,12 @@ def control_buttons():
                 multiple=False
             ),
             id='update-page-button',
+            color="primary",
+            className="mr-2 mt-2 mb-2"
+        ),
+        dbc.Button(
+            "Edit",
+            id='edit-page-collapse-button',
             color="primary",
             className="mr-2 mt-2 mb-2"
         ),
@@ -125,6 +133,30 @@ def add_page_collapse():
             )
         ),
         id="add-page-collapse",
+        is_open=False,
+    )
+
+
+def edit_page_collapce():
+    return dbc.Collapse(
+        dbc.Card(
+            dbc.CardBody(
+                [
+                    dbc.Textarea(
+                        id="edit-page-textarea",
+                        spellCheck=True,
+                        className="mr-2"
+                    ),
+                    dbc.Button(
+                        'Save',
+                        id='save-page-button',
+                        color='primary',
+                        className="mr-2 mt-2 mb-2"
+                    )
+                ]
+            )
+        ),
+        id="edit-page-collapse",
         is_open=False,
     )
 

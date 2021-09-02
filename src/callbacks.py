@@ -86,12 +86,53 @@ def upload_page(contents, filename, pathname):
 
 @app.callback(
     Output('add-page-collapse', 'is_open'),
-    [Input('add-page-collapse-button', 'n_clicks'), Input('add-page-button', 'n_clicks')],
+    [
+        Input('add-page-collapse-button', 'n_clicks'),
+        Input('add-page-button', 'n_clicks')
+    ],
     [State('add-page-collapse', 'is_open')],
     prevent_initial_call=True
 )
 def open_page_name_input(n_clicks1, n_clicks2, is_open):
     return not is_open
+
+
+@app.callback(
+    [
+        Output('edit-page-collapse', 'is_open'),
+        Output('edit-page-textarea', 'value'),
+        Output('edit-page-textarea', 'rows')
+    ],
+    [
+        Input('edit-page-collapse-button', 'n_clicks'),
+        Input('save-page-button', 'n_clicks')],
+    [
+        State('edit-page-collapse', 'is_open'),
+        State('url', 'pathname')
+    ],
+    prevent_initial_call=True
+)
+def open_edit_name_textarea(n_clicks1, n_clicks2, is_open, pathname):
+    if not is_open:
+        md = repo.note(pathname)
+        return not is_open, md, len(md.split('\n'))
+
+    return not is_open, '', 0
+
+
+@app.callback(
+    Output({'type': 'alert', 'index': 'edit-page'}, 'children'),
+    Input('save-page-button', 'n_clicks'),
+    State('edit-page-textarea', 'value'),
+    State('url', 'pathname'),
+    prevent_initial_call=True
+)
+def save_page(n_clicks, value, pathname):
+    path = repo.add_note(pathname, value.encode('utf-8'))
+    if path is None:
+        return layout.alert("Error while saving new page version", "warning")
+
+    return layout.alert("Page successfully updated", "success")
 
 
 @app.callback(
