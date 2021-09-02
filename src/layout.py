@@ -152,6 +152,12 @@ def edit_page_collapce():
                         id='save-page-button',
                         color='primary',
                         className="mr-2 mt-2 mb-2"
+                    ),
+                    dbc.Button(
+                        'Cancel',
+                        id='cancel-save-page-button',
+                        color='secondary',
+                        className="mr-2 mt-2 mb-2"
                     )
                 ]
             )

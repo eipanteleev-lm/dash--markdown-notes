@@ -105,14 +105,16 @@ def open_page_name_input(n_clicks1, n_clicks2, is_open):
     ],
     [
         Input('edit-page-collapse-button', 'n_clicks'),
-        Input('save-page-button', 'n_clicks')],
+        Input('save-page-button', 'n_clicks'),
+        Input('cancel-save-page-button', 'n_clicks')
+    ],
     [
         State('edit-page-collapse', 'is_open'),
         State('url', 'pathname')
     ],
     prevent_initial_call=True
 )
-def open_edit_name_textarea(n_clicks1, n_clicks2, is_open, pathname):
+def open_edit_name_textarea(n_clicks1, n_clicks2, n_clicks3, is_open, pathname):
     if not is_open:
         md = repo.note(pathname)
         return not is_open, md, len(md.split('\n'))
