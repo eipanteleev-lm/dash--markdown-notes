@@ -145,6 +145,7 @@ def edit_page_collapce():
                     dbc.Textarea(
                         id="edit-page-textarea",
                         spellCheck=True,
+                        lang="markdown",
                         className="mr-2"
                     ),
                     dbc.Button(
@@ -260,7 +261,11 @@ def slidebar_tree(tree, path, opened_list):
                 open=(entry_name == opened_entry)
             )
 
-        slidebar_list.append(slidebar)
+            slidebar_list.append(slidebar)
+
+        else:
+            slidebar_list.append(slidebar)
+            slidebar_list.append(html.Br())
 
     return slidebar_list
 
