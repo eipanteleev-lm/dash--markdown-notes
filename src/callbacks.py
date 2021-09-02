@@ -128,9 +128,18 @@ def open_edit_name_textarea(n_clicks1, n_clicks2, is_open, pathname):
     prevent_initial_call=True
 )
 def save_page(n_clicks, value, pathname):
+    if pathname == '/':
+        return layout.alert(
+            (
+                "Are you sure you want to update the home page?"
+                + " We can't let you do that."
+            ),
+            "warning"
+        )
+
     path = repo.add_note(pathname, value.encode('utf-8'))
     if path is None:
-        return layout.alert("Error while saving new page version", "warning")
+        return layout.alert("Error while saving new page version", "error")
 
     return layout.alert("Page successfully updated", "success")
 
