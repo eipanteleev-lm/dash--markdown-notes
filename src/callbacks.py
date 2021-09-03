@@ -231,7 +231,7 @@ def delete_page(n_clicks, pathname):
     repo.clear_note(pathname)
     
     template = repo.template('default')
-    repo.add_note(pathname, template)
+    repo.add_note(pathname, template.encode('utf-8'))
     return layout.alert("Page successfully cleared", "success")
 
 
