@@ -123,6 +123,15 @@ def open_edit_name_textarea(n_clicks1, n_clicks2, n_clicks3, is_open, pathname):
 
 
 @app.callback(
+    Output('edit-page-preview', 'children'),
+    Input('edit-page-textarea', 'value'),
+    Input('edit-page-collapse', 'is_open')
+)
+def load_extedit_preview(text, is_open):
+    return text
+
+
+@app.callback(
     Output({'type': 'alert', 'index': 'edit-page'}, 'children'),
     Input('save-page-button', 'n_clicks'),
     State('edit-page-textarea', 'value'),

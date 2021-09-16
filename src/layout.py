@@ -142,11 +142,23 @@ def edit_page_collapce():
         dbc.Card(
             dbc.CardBody(
                 [
-                    dbc.Textarea(
-                        id="edit-page-textarea",
-                        spellCheck=True,
-                        lang="markdown",
-                        className="mr-2"
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                dbc.Textarea(
+                                    id="edit-page-textarea",
+                                    spellCheck=True,
+                                    style={
+                                        "height": "100%"
+                                    }
+                                ),
+                            ),
+                            dbc.Col(
+                                dcc.Markdown(
+                                    id="edit-page-preview"
+                                )
+                            )
+                        ]
                     ),
                     dbc.Button(
                         'Save',
