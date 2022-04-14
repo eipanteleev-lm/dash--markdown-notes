@@ -4,11 +4,16 @@ import dash
 
 import dash_bootstrap_components as dbc
 
+from flask import Flask
+
 
 assets_folder = './assets'
 
+server = Flask(__name__)
+
 app = dash.Dash(
     __name__,
+    server=server,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     assets_folder=assets_folder,
     title='Markdown Notes'

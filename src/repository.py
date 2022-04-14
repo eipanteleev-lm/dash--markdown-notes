@@ -33,6 +33,19 @@ def notes_tree(path: str='notes') -> list:
     ]
 
 
+def files_list(path: str) -> list:
+    fullpath = utils.webpath_to_notepath(path)
+    return [
+        filename
+        for filename in os.listdir(fullpath)
+        if (
+            os.path.isfile(os.path.join(fullpath, filename))
+            and filename != "note.md"
+        )
+    ]
+
+
+
 def add_note_directory(path: str, name: str) -> str:
     fullpath = os.path.join(utils.webpath_to_notepath(path), name)
 
@@ -77,7 +90,9 @@ def delete_note(path: str) -> str:
     shutil.rmtree(fullpath)
     return path
 
-    
 
-
+def archive_folder(path: str) -> str:
+    fullpath = os.path.join(utils.webpath_to_notepath(path))
+    shutil.make_archive("notes", "zip", fullpath)
+    return os.path.join("notes.zip")
     

@@ -1,3 +1,5 @@
+from typing import List
+
 import dash_bootstrap_components as dbc
 from dash_bootstrap_components._components.Alert import Alert
 
@@ -72,6 +74,16 @@ def control_buttons():
             className="mr-2 mt-2 mb-2"
         ),
         dbc.Button(
+            [
+                'Download page',
+                dcc.Download(id='download-page')
+            ],
+            id='download-page-button',
+            outline=True,
+            color="secondary",
+            className="mr-2 mt-2 mb-2"
+        ),
+        dbc.Button(
             dcc.Upload(
                 "Upload file",
                 id='upload-file',
@@ -80,16 +92,6 @@ def control_buttons():
             id='upload-file-button',
             color="secondary",
             outline=True,
-            className="mr-2 mt-2 mb-2"
-        ),
-        dbc.Button(
-            [
-                'Download page',
-                dcc.Download(id='download-page')
-            ],
-            id='download-page-button',
-            outline=True,
-            color="secondary",
             className="mr-2 mt-2 mb-2"
         ),
         dbc.Button(
@@ -241,7 +243,21 @@ def slidebar_layout(tree, opened_list):
     return html.Div([
         html.H2("Contents"),
         html.Hr(),
-        html.Div(slidebar)
+        html.Div(slidebar),
+        html.Hr(),
+        html.H3("Files"),
+        html.Div(id="files"),
+        html.Hr(),
+        dbc.Button(
+            [
+                "Download notes",
+                dcc.Download(id='download-notes')
+            ],
+            id="download-notes-button",
+            outline=True,
+            color="secondary",
+            className="mr-2 mt-2 mb-2"
+        )
     ])
 
 
@@ -280,6 +296,31 @@ def slidebar_tree(tree, path, opened_list):
             slidebar_list.append(html.Br())
 
     return slidebar_list
+
+
+def files(filenames: List[str]):
+    return [
+        html.Div(
+            [
+                html.Div(
+                    filename,
+                    id={"type": "file-link-div", "index": filename},
+                    style={
+                        "display": "inline-block"
+                    }
+                ),
+                dcc.Clipboard(
+                    id={"type": "file-link-clipboard", "index": filename},
+                    style={
+                        "display": "inline-block",
+                        "fontSize": 15,
+                        "margin-left": "2px"
+                    }
+                )
+            ]
+        )
+        for filename in filenames
+    ]
 
 
 def bread_crumbs(links: list):

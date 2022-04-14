@@ -1,5 +1,6 @@
 import base64
 import os
+import re
 from typing import List
 from urllib.parse import unquote
 
@@ -37,5 +38,10 @@ def parse_note_file(contents, filename):
 
 
 def parse_file(contents):
-    content_string = contents.split(',')[0]
+    content_string = contents.encode("utf8").split(b";base64,")[1]
     return base64.b64decode(content_string)
+
+
+def file_link(path: str, filename: str) -> str:
+    fullpath = webpath_to_list(path)
+    return "/file/" + "/".join(fullpath) + "/" + filename

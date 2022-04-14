@@ -50,6 +50,30 @@ def render_slidebar(pathname, n_intervals):
 
 
 @app.callback(
+    Output('files', 'children'),
+    [
+        Input('url', 'pathname'),
+        Input('interval', 'n_intervals')
+    ]
+)
+def render_files(pathname, n_intervals):
+    filenames = repo.files_list(pathname)
+    return layout.files(filenames)
+
+
+@app.callback(
+    Output({"type": "file-link-clipboard", "index": MATCH}, "content"),
+    Input({"type": "file-link-clipboard", "index": MATCH}, "n_clicks"),
+    [
+        State({"type": "file-link-div", "index": MATCH}, "children"),
+        State('url', 'pathname')
+    ]
+)
+def copy_file_link(n_clicks, filename, pathname):
+    return utils.file_link(pathname, filename)
+
+
+@app.callback(
     Output('url', 'pathname'),
     Input({'type': 'alert', 'index': ALL}, 'children'),
     State('url', 'pathname'),
@@ -205,6 +229,17 @@ def download_page(n_clicks, pathname):
         md,
         header or 'root',
     )
+
+
+@app.callback(
+    Output('download-notes', 'data'),
+    Input('download-notes-button', 'n_clicks'),
+    State('url', 'pathname'),
+    prevent_initial_call=True
+)
+def download_notes(n_clicks, pathname):
+    fullpath = repo.archive_folder(pathname)
+    return dcc.send_file(fullpath)
 
 
 @app.callback(
