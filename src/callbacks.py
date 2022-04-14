@@ -262,7 +262,7 @@ def open_modal(n_clicks1, n_clicks2, n_clicks3, is_open):
     State('url', 'pathname'),
     prevent_initial_call=True
 )
-def delete_page(n_clicks, pathname):
+def clear_page(n_clicks, pathname):
     if pathname == '/':
         return layout.alert(
             (

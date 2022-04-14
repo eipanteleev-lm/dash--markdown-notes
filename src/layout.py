@@ -1,7 +1,6 @@
 from typing import List
 
 import dash_bootstrap_components as dbc
-from dash_bootstrap_components._components.Alert import Alert
 
 import dash_core_components as dcc
 
@@ -29,7 +28,7 @@ def main():
                     html.Div(delete_page_modal(), id='delete-page-modal-wrapper'),
                     html.Div(add_page_collapse(), id='add-page-collapse-wrapper'),
                     html.Div(edit_page_collapce(), id='edit-page-collapse-wrapper'),
-                    html.Div(id='page-content')
+                    html.Div(id='page-content'),
                 ],
                 style=config.CONTENT_STYLE
             )
@@ -107,7 +106,8 @@ def control_buttons():
             outline=True,
             color="danger",
             className="mr-2 mt-2 mb-2"
-        )
+        ),
+        html.Div(control_bar_tooltips(), id='tooltips-wrapper')
     ]
 
 
@@ -257,6 +257,10 @@ def slidebar_layout(tree, opened_list):
             outline=True,
             color="secondary",
             className="mr-2 mt-2 mb-2"
+        ),
+        tooltip(
+            "Download all pages in current namespace (zip archive)",
+            "download-notes-button"
         )
     ])
 
@@ -344,3 +348,45 @@ def alert(alert_text: str, alert_type: str):
         color=alert_type,
         duration=4000
     )
+
+
+def tooltip(text, target):
+    return dbc.Tooltip(
+        text,
+        target=target,
+        delay={"show": 5, "hide": 50},
+        placement="bottom"
+    )
+
+
+def control_bar_tooltips():
+    return [
+        tooltip(
+            "Upload page markdown",
+            "update-page-button"
+        ),
+        tooltip(
+            "Edit page manually",
+            "edit-page-collapse-button"
+        ),
+        tooltip(
+            "Add new page inside current",
+            "add-page-collapse-button"
+        ),
+        tooltip(
+            "Download page md file",
+            "download-page-button"
+        ),
+        tooltip(
+            "Upload file to page namespace",
+            "upload-file-button"
+        ),
+        tooltip(
+            "Clear current page text",
+            {"type": "modal-button", "index": "clear-page"}
+        ),
+        tooltip(
+            "Delete all pages and inside current namespace",
+            {"type": "modal-button", "index": "delete-page"}
+        )
+    ]
