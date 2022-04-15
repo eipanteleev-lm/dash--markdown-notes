@@ -1,5 +1,6 @@
 import os
 import shutil
+from typing import List
 
 from engines.base import BaseEngine, BaseEngineSettings
 
@@ -33,14 +34,17 @@ class FilesystemEngine(BaseEngine):
 
         return md
 
-    def notes_tree(self, path: str='notes') -> list:
+    def notes_tree(self, path: str=None) -> list:
+        if path is None:
+            path = self.settings.folder
+
         return [
             (entry.name, self.notes_tree(entry.path))
-            for entry in os.scandir(path)
+            for entry in os.scandir(path or self.settings.folder)
             if entry.is_dir()
         ]
 
-    def files_list(self, path: str) -> list:
+    def files(self, path: str) -> List[str]:
         fullpath = self.webpath_to_notepath(path)
         return [
             filename
