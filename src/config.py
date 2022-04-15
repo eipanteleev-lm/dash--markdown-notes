@@ -6,6 +6,8 @@ import dash_bootstrap_components as dbc
 
 from flask import Flask
 
+import engines
+
 
 assets_folder = './assets'
 
@@ -43,3 +45,5 @@ CONTENT_STYLE = {
 }
 
 NOTES_PATH = 'notes'
+
+engine = engines.filesystem.FilesystemEngine(NOTES_PATH)
