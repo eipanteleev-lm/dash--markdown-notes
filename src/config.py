@@ -46,4 +46,8 @@ CONTENT_STYLE = {
 
 NOTES_PATH = 'notes'
 
-engine = engines.filesystem.FilesystemEngine(NOTES_PATH)
+settings = engines.filesystem.FilesystemEngineSettings(
+    folder=NOTES_PATH
+)
+
+engine = engines.filesystem.FilesystemEngine(settings)
