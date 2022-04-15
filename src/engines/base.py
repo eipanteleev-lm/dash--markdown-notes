@@ -1,7 +1,18 @@
 from typing import List
 
+from pydantic import BaseSettings
+
+
+class BaseEngineSettings(BaseSettings):
+    folder: str = "notes"
+    note_filename: str = "note.md"
+    notes_archive_name: str = "notes"
+
 
 class BaseEngine:
+
+    def __init__(self, settings: BaseEngineSettings):
+        self.settings = settings
 
     def webpath_to_notepath(path: str):
         pass

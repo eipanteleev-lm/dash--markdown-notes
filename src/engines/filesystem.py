@@ -1,22 +1,29 @@
 import os
 import shutil
 
-from engines.base import BaseEngine
+from engines.base import BaseEngine, BaseEngineSettings
 
 import utils
 
 
+class FilesystemEngineSettings(BaseEngineSettings):
+    pass
+
+
 class FilesystemEngine(BaseEngine):
 
-    def __init__(self, folder: str = "notes"):
-        self.folder = folder
+    def __init__(self, settings: FilesystemEngineSettings):
+        self.settings = settings
 
-    def webpath_to_notepath(self, path: str):
+    def webpath_to_notepath(self, path: str) -> str:
         pathlist = utils.webpath_to_list(path)
-        return os.path.join(self.folder, *pathlist)
+        return os.path.join(self.settings.folder, *pathlist)
 
     def note(self, path: str) -> str:
-        fullpath = os.path.join(self.webpath_to_notepath(path), "note.md")
+        fullpath = os.path.join(
+            self.webpath_to_notepath(path),
+            self.settings.note_filename
+        )
 
         if not os.path.exists(fullpath):
             return None
@@ -40,7 +47,7 @@ class FilesystemEngine(BaseEngine):
             for filename in os.listdir(fullpath)
             if (
                 os.path.isfile(os.path.join(fullpath, filename))
-                and filename != "note.md"
+                and filename != self.settings.note_filename
             )
         ]
 
@@ -54,7 +61,10 @@ class FilesystemEngine(BaseEngine):
         return path + '/' + name
 
     def add_note(self, path: str, md: str):
-        fullpath = os.path.join(self.webpath_to_notepath(path), "note.md")
+        fullpath = os.path.join(
+            self.webpath_to_notepath(path),
+            self.settings.note_filename
+        )
 
         with open(fullpath, 'wb') as f:
             f.write(md)
@@ -70,7 +80,10 @@ class FilesystemEngine(BaseEngine):
         return path
 
     def clear_note(self, path: str) -> str:
-        fullpath = os.path.join(self.webpath_to_notepath(path), "note.md")
+        fullpath = os.path.join(
+            self.webpath_to_notepath(path),
+            self.settings.note_filename
+        )
 
         if not os.path.exists(fullpath):
             return None
@@ -86,5 +99,10 @@ class FilesystemEngine(BaseEngine):
 
     def archive_folder(self, path: str) -> str:
         fullpath = os.path.join(self.webpath_to_notepath(path))
-        shutil.make_archive("notes", "zip", fullpath)
-        return os.path.join("notes.zip")
+        shutil.make_archive(
+            self.settings.notes_archive_name,
+            "zip",
+            fullpath
+        )
+
+        return os.path.join(f"{self.settings.notes_archive_name}.zip")
