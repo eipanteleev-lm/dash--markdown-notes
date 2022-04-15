@@ -57,7 +57,7 @@ def render_slidebar(pathname, n_intervals):
     ]
 )
 def render_files(pathname, n_intervals):
-    filenames = engine.files_list(pathname)
+    filenames = engine.files(pathname)
     if filenames:
         return layout.files(filenames)
 
