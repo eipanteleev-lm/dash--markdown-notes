@@ -1,4 +1,4 @@
-from config import app
+from config import app, engine
 
 import dash_core_components as dcc
 
@@ -19,7 +19,7 @@ import utils
     ]
 )
 def render_page_content(pathname, n_intervals):
-    md = repo.note(pathname)
+    md = engine.note(pathname)
     if md is None:
         template = repo.template('404')
         return layout.note(template)
@@ -44,7 +44,7 @@ def render_bread_crumbs(pathname):
     ]
 )
 def render_slidebar(pathname, n_intervals):
-    tree = repo.notes_tree()
+    tree = engine.notes_tree()
     pathlist = utils.webpath_to_list(pathname)
     return layout.slidebar_layout(tree, pathlist)
 
@@ -57,8 +57,11 @@ def render_slidebar(pathname, n_intervals):
     ]
 )
 def render_files(pathname, n_intervals):
-    filenames = repo.files_list(pathname)
-    return layout.files(filenames)
+    filenames = engine.files_list(pathname)
+    if filenames:
+        return layout.files(filenames)
+
+    return []
 
 
 @app.callback(
@@ -101,7 +104,7 @@ def upload_page(contents, filename, pathname):
         )
 
     md = utils.parse_note_file(contents, filename)
-    path = repo.add_note(pathname, md)
+    path = engine.add_note(pathname, md)
     if path is None:
         return layout.alert("Something went wrong...", "danger")
 
@@ -140,7 +143,7 @@ def open_page_name_input(n_clicks1, n_clicks2, is_open):
 )
 def open_edit_name_textarea(n_clicks1, n_clicks2, n_clicks3, is_open, pathname):
     if not is_open:
-        md = repo.note(pathname)
+        md = engine.note(pathname)
         return not is_open, md, len(md.split('\n'))
 
     return not is_open, '', 0
@@ -172,7 +175,7 @@ def save_page(n_clicks, value, pathname):
             "warning"
         )
 
-    path = repo.add_note(pathname, value.encode('utf-8'))
+    path = engine.add_note(pathname, value.encode('utf-8'))
     if path is None:
         return layout.alert("Error while saving new page version", "error")
 
@@ -190,12 +193,12 @@ def add_page(n_clicks, value, pathname):
     if not value:
         return layout.alert("Could not create page with empty name", "warning")
 
-    path = repo.add_note_directory(pathname, value)
+    path = engine.add_note_directory(pathname, value)
     if path is None:
         return layout.alert("Could not recreate existing page", "warning")
 
     template = repo.template('default')
-    repo.add_note(path, template.encode('utf-8'))
+    engine.add_note(path, template.encode('utf-8'))
 
     return layout.alert("Page successfully created", "success")
 
@@ -211,7 +214,7 @@ def upload_file(contents_list, filenames_list, pathname):
     if contents_list is not None:
         for contents, filename in zip(contents_list, filenames_list):
             parsed_contents = utils.parse_file(contents)
-            repo.add_file(pathname, parsed_contents, filename)
+            engine.add_file(pathname, parsed_contents, filename)
 
     return layout.alert('Files successfully uploaded', 'success')
 
@@ -223,7 +226,7 @@ def upload_file(contents_list, filenames_list, pathname):
     prevent_initial_call=True
 )
 def download_page(n_clicks, pathname):
-    md = repo.note(pathname)
+    md = engine.note(pathname)
     header = pathname.strip('/').split('/')[-1]
     return dcc.send_string(
         md,
@@ -238,7 +241,7 @@ def download_page(n_clicks, pathname):
     prevent_initial_call=True
 )
 def download_notes(n_clicks, pathname):
-    fullpath = repo.archive_folder(pathname)
+    fullpath = engine.archive_folder(pathname)
     return dcc.send_file(fullpath)
 
 
@@ -272,10 +275,10 @@ def clear_page(n_clicks, pathname):
             "warning"
         )
 
-    repo.clear_note(pathname)
+    engine.clear_note(pathname)
     
     template = repo.template('default')
-    repo.add_note(pathname, template.encode('utf-8'))
+    engine.add_note(pathname, template.encode('utf-8'))
     return layout.alert("Page successfully cleared", "success")
 
 
@@ -295,7 +298,7 @@ def delete_page(n_clicks, pathname):
             "warning"
         )
 
-    repo.delete_note(pathname)
+    engine.delete_note(pathname)
     return layout.alert("Pages successfully deleted", "success")
 
 

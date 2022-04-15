@@ -244,8 +244,6 @@ def slidebar_layout(tree, opened_list):
         html.H2("Contents"),
         html.Hr(),
         html.Div(slidebar),
-        html.Hr(),
-        html.H3("Files"),
         html.Div(id="files"),
         html.Hr(),
         dbc.Button(
@@ -304,26 +302,32 @@ def slidebar_tree(tree, path, opened_list):
 
 def files(filenames: List[str]):
     return [
+        html.H3("Files"),
+        html.Hr(),
         html.Div(
             [
                 html.Div(
-                    filename,
-                    id={"type": "file-link-div", "index": filename},
-                    style={
-                        "display": "inline-block"
-                    }
-                ),
-                dcc.Clipboard(
-                    id={"type": "file-link-clipboard", "index": filename},
-                    style={
-                        "display": "inline-block",
-                        "fontSize": 15,
-                        "margin-left": "2px"
-                    }
+                    [
+                        html.Div(
+                            filename,
+                            id={"type": "file-link-div", "index": filename},
+                            style={
+                                "display": "inline-block"
+                            }
+                        ),
+                        dcc.Clipboard(
+                            id={"type": "file-link-clipboard", "index": filename},
+                            style={
+                                "display": "inline-block",
+                                "fontSize": 15,
+                                "margin-left": "2px"
+                            }
+                        )
+                    ]
                 )
+                for filename in filenames
             ]
         )
-        for filename in filenames
     ]
 
 
