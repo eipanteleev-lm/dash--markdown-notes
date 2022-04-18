@@ -50,6 +50,18 @@ def render_slidebar(pathname, n_intervals):
 
 
 @app.callback(
+    Output('tags-wrapper', 'children'),
+    [
+        Input('url', 'pathname'),
+        Input('interval', 'n_intervals')
+    ]
+)
+def render_tags(pathname, n_intervals):
+    tags = engine.tags(pathname)
+    return layout.tags(tags)
+
+
+@app.callback(
     Output('files', 'children'),
     [
         Input('url', 'pathname'),
