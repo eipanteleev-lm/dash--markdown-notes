@@ -24,6 +24,7 @@ def main():
                     html.Div(alerts(), id="alerts-wrapper"),
                     html.Div(id='bread-crumbs'),
                     html.Div(control_buttons(), id='control-buttons-wrapper'),
+                    html.Div(id="tags-wrapper"),
                     html.Div(clear_page_modal(), id='clear-page-modal-wrapper'),
                     html.Div(delete_page_modal(), id='delete-page-modal-wrapper'),
                     html.Div(add_page_collapse(), id='add-page-collapse-wrapper'),
@@ -44,6 +45,17 @@ def alerts():
         html.Div(id={'type': 'alert', 'index': 'clear-page'}),
         html.Div(id={'type': 'alert', 'index': 'delete-page'}),
         html.Div(id={'type': 'alert', 'index': 'edit-page'})
+    ]
+
+
+def tags(taglist: List[str]):
+    return [
+        dbc.Badge(
+            tag,
+            id={"type": "tag", "index": tag},
+            className="me-1"
+        )
+        for tag in taglist
     ]
 
 
