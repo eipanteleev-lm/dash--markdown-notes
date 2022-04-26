@@ -22,9 +22,9 @@ def render_page_content(pathname, n_intervals):
     md = engine.note(pathname)
     if md is None:
         template = repo.template('404')
-        return layout.note(template)
+        return layout.base.note(template)
 
-    return layout.note(md)
+    return layout.base.note(md)
 
 
 @app.callback(
@@ -33,7 +33,7 @@ def render_page_content(pathname, n_intervals):
 )
 def render_bread_crumbs(pathname):
     links = utils.webpath_bread_crumps(pathname)
-    return layout.bread_crumbs(links)
+    return layout.base.bread_crumbs(links)
 
 
 @app.callback(
@@ -46,7 +46,7 @@ def render_bread_crumbs(pathname):
 def render_slidebar(pathname, n_intervals):
     tree = engine.notes_tree()
     pathlist = utils.webpath_to_list(pathname)
-    return layout.slidebar_layout(tree, pathlist)
+    return layout.slidebar.slidebar_layout(tree, pathlist)
 
 
 @app.callback(
@@ -66,9 +66,9 @@ def render_tags(args, pathname, is_open):
     tags = engine.tags(pathname)
     triggered = utils.dash_triggered_ids(dash.callback_context)
     if 'manage-tags-collapse-button' in triggered:
-        return layout.tags(tags, not is_open)
+        return layout.tags.tags(tags, not is_open)
 
-    return layout.tags(tags, is_open)
+    return layout.tags.tags(tags, is_open)
 
 
 @app.callback(
@@ -82,7 +82,7 @@ def render_tags(args, pathname, is_open):
 def render_files(pathname, n_intervals):
     filenames = engine.files(pathname)
     if filenames:
-        return layout.files(filenames)
+        return layout.slidebar.files(filenames)
 
     return []
 
@@ -122,7 +122,7 @@ def refresh_page(args, pathname):
 )
 def upload_page(contents, filename, pathname):
     if pathname == '/':
-        return layout.alert(
+        return layout.alerts.alert(
             (
                 "Are you sure you want to update the home page?"
                 + " We can't let you do that."
@@ -133,9 +133,9 @@ def upload_page(contents, filename, pathname):
     md = utils.parse_note_file(contents, filename)
     path = engine.add_note(pathname, md)
     if path is None:
-        return layout.alert("Something went wrong...", "danger")
+        return layout.alerts.alert("Something went wrong...", "danger")
 
-    return layout.alert("Page successfully updated", "success")
+    return layout.alerts.alert("Page successfully updated", "success")
 
 
 @app.callback(
@@ -173,7 +173,7 @@ def open_tag_input(n_clicks1, n_clicks2, is_open):
 )
 def add_tag(n_clicks, value, pathname):
     engine.add_tag(pathname, value)
-    return layout.alert("Tag added", "success")
+    return layout.alerts.alert("Tag added", "success")
 
 
 @app.callback(
@@ -205,7 +205,7 @@ def delete_tag(n_clicks, pathname, tag_name):
     ],
     prevent_initial_call=True
 )
-def open_edit_name_textarea(n_clicks1, n_clicks2, n_clicks3, is_open, pathname):
+def open_edit_page_textarea(n_clicks1, n_clicks2, n_clicks3, is_open, pathname):
     if not is_open:
         md = engine.note(pathname)
         return not is_open, md, len(md.split('\n'))
@@ -231,7 +231,7 @@ def load_extedit_preview(text, is_open):
 )
 def save_page(n_clicks, value, pathname):
     if pathname == '/':
-        return layout.alert(
+        return layout.alerts.alert(
             (
                 "Are you sure you want to update the home page?"
                 + " We can't let you do that."
@@ -241,9 +241,12 @@ def save_page(n_clicks, value, pathname):
 
     path = engine.add_note(pathname, value.encode('utf-8'))
     if path is None:
-        return layout.alert("Error while saving new page version", "error")
+        return layout.alerts.alert(
+            "Error while saving new page version",
+            "error"
+        )
 
-    return layout.alert("Page successfully updated", "success")
+    return layout.alerts.alert("Page successfully updated", "success")
 
 
 @app.callback(
@@ -255,16 +258,22 @@ def save_page(n_clicks, value, pathname):
 )
 def add_page(n_clicks, value, pathname):
     if not value:
-        return layout.alert("Could not create page with empty name", "warning")
+        return layout.alerts.alert(
+            "Could not create page with empty name",
+            "warning"
+        )
 
     path = engine.add_note_directory(pathname, value)
     if path is None:
-        return layout.alert("Could not recreate existing page", "warning")
+        return layout.alerts.alert(
+            "Could not recreate existing page",
+            "warning"
+        )
 
     template = repo.template('default')
     engine.add_note(path, template.encode('utf-8'))
 
-    return layout.alert("Page successfully created", "success")
+    return layout.alerts.alert("Page successfully created", "success")
 
 
 @app.callback(
@@ -280,7 +289,7 @@ def upload_file(contents_list, filenames_list, pathname):
             parsed_contents = utils.parse_file(contents)
             engine.add_file(pathname, parsed_contents, filename)
 
-    return layout.alert('Files successfully uploaded', 'success')
+    return layout.alerts.alert('Files successfully uploaded', 'success')
 
 
 @app.callback(
@@ -332,7 +341,7 @@ def open_modal(n_clicks1, n_clicks2, n_clicks3, is_open):
 )
 def clear_page(n_clicks, pathname):
     if pathname == '/':
-        return layout.alert(
+        return layout.alerts.alert(
             (
                 "Are you sure you want to clear the home page?"
                 + " We can't let you do that."
@@ -344,7 +353,7 @@ def clear_page(n_clicks, pathname):
     
     template = repo.template('default')
     engine.add_note(pathname, template.encode('utf-8'))
-    return layout.alert("Page successfully cleared", "success")
+    return layout.alerts.alert("Page successfully cleared", "success")
 
 
 @app.callback(
@@ -355,7 +364,7 @@ def clear_page(n_clicks, pathname):
 )
 def delete_page(n_clicks, pathname):
     if pathname == '/':
-        return layout.alert(
+        return layout.alerts.alert(
             (
                 "Are you sure you want to delete the home page?"
                 + " We can't let you do that."
@@ -364,7 +373,7 @@ def delete_page(n_clicks, pathname):
         )
 
     engine.delete_note(pathname)
-    return layout.alert("Pages successfully deleted", "success")
+    return layout.alerts.alert("Pages successfully deleted", "success")
 
 
 

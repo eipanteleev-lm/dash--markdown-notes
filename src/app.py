@@ -4,9 +4,9 @@ import callbacks
 
 import handlers
 
-import layout
+import layout.base as base
 
-app.layout = layout.main()
+app.layout = base.main()
 
 
 if __name__ == "__main__":
