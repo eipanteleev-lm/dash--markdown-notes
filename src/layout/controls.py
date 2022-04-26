@@ -48,27 +48,27 @@ def control_buttons():
             ),
             id='update-page-button',
             color="primary",
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             "Edit",
             id='edit-page-collapse-button',
             color="primary",
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             "Add page",
             id='add-page-collapse-button',
             outline=True,
             color="secondary",
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             "Manage tags",
             id="manage-tags-collapse-button",
             outline=True,
             color="secondary",
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             [
@@ -78,7 +78,7 @@ def control_buttons():
             id='download-page-button',
             outline=True,
             color="secondary",
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             dcc.Upload(
@@ -89,21 +89,21 @@ def control_buttons():
             id='upload-file-button',
             color="secondary",
             outline=True,
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             "Clear page",
             id={"type": "modal-button", "index": "clear-page"},
             outline=True,
             color="secondary",
-            className="me-1"
+            className="me-1 my-1"
         ),
         dbc.Button(
             "Delete pages",
             id={"type": "modal-button", "index": "delete-page"},
             outline=True,
             color="danger",
-            className="me-1"
+            className="me-1 my-1"
         ),
         html.Div(control_bar_tooltips(), id='tooltips-wrapper')
     ]
