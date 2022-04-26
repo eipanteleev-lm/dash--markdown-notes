@@ -91,13 +91,27 @@ class FilesystemEngine(BaseEngine):
 
         return metadata
 
-    def tags(self, path: str) -> List[str]:
+    def tags(self, path: str) -> List[models.Tag]:
         metadata = self.metadata(path)
         return metadata.tags
 
-    def add_tag(self, path: str, tag: str) -> None:
+    def add_tag(self, path: str, tag_name: str) -> models.Metadata:
         metadata = self.metadata(path)
-        metadata.tags.append(tag)
+        for metadata_tag in metadata.tags:
+            if metadata_tag.name == tag_name:
+                return metadata
+
+        metadata.tags.append(models.Tag(name=tag_name))
+        return self.add_metadata(path, metadata)
+
+    def delete_tag(self, path: str, tag_name: str) -> models.Metadata:
+        metadata = self.metadata(path)
+        metadata.tags = [
+            metadata_tag
+            for metadata_tag in metadata.tags
+            if metadata_tag.name != tag_name
+        ]
+
         return self.add_metadata(path, metadata)
 
     def add_note_directory(self, path: str, name: str) -> str:
