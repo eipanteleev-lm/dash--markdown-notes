@@ -1,8 +1,11 @@
+import json
 import os
 import shutil
-from typing import List
+from typing import List, Optional
 
 from engines.base import BaseEngine, BaseEngineSettings
+
+import models
 
 import utils
 
@@ -51,9 +54,65 @@ class FilesystemEngine(BaseEngine):
             for filename in os.listdir(fullpath)
             if (
                 os.path.isfile(os.path.join(fullpath, filename))
-                and filename != self.settings.note_filename
+                and filename not in (
+                    self.settings.note_filename,
+                    self.settings.metadata_filename
+                )
             )
         ]
+
+    def metadata(self, path: str) -> models.Metadata:
+        fullpath = os.path.join(
+            self.webpath_to_notepath(path),
+            self.settings.metadata_filename
+        )
+
+        if not os.path.exists(fullpath):
+            return models.Metadata()
+
+        with open(fullpath) as f:
+            metadata = models.Metadata(**json.load(f))
+
+        return metadata
+
+    def add_metadata(
+        self,
+        path: str,
+        metadata: Optional[models.Metadata] = None
+    ) -> models.Metadata:
+        fullpath = os.path.join(
+            self.webpath_to_notepath(path),
+            self.settings.metadata_filename
+        )
+
+        metadata = metadata or models.Metadata()
+        with open(fullpath, "w") as f:
+            json.dump(metadata.dict(), f)
+
+        return metadata
+
+    def tags(self, path: str) -> List[models.Tag]:
+        metadata = self.metadata(path)
+        return metadata.tags
+
+    def add_tag(self, path: str, tag_name: str) -> models.Metadata:
+        metadata = self.metadata(path)
+        for metadata_tag in metadata.tags:
+            if metadata_tag.name == tag_name:
+                return metadata
+
+        metadata.tags.append(models.Tag(name=tag_name))
+        return self.add_metadata(path, metadata)
+
+    def delete_tag(self, path: str, tag_name: str) -> models.Metadata:
+        metadata = self.metadata(path)
+        metadata.tags = [
+            metadata_tag
+            for metadata_tag in metadata.tags
+            if metadata_tag.name != tag_name
+        ]
+
+        return self.add_metadata(path, metadata)
 
     def add_note_directory(self, path: str, name: str) -> str:
         fullpath = os.path.join(self.webpath_to_notepath(path), name)

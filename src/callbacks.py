@@ -1,7 +1,7 @@
 from config import app, engine
 
-import dash_core_components as dcc
-
+import dash
+from dash import dcc
 from dash.dependencies import ALL, MATCH, Input, Output, State
 
 import layout
@@ -50,11 +50,34 @@ def render_slidebar(pathname, n_intervals):
 
 
 @app.callback(
+    output=Output('tags-wrapper', 'children'),
+    inputs={
+        "args": (
+            Input('interval', 'n_intervals'),
+            Input('manage-tags-collapse-button', 'n_clicks'),
+            Input('add-tag-button', 'n_clicks'),
+            Input({"type": "tag-name", "index": ALL}, 'n_clicks')
+        ),
+        "pathname": Input('url', 'pathname')
+    },
+    state={"is_open": State('add-tag-collapse', 'is_open')}
+)
+def render_tags(args, pathname, is_open):
+    tags = engine.tags(pathname)
+    triggered = utils.dash_triggered_ids(dash.callback_context)
+    if 'manage-tags-collapse-button' in triggered:
+        return layout.tags(tags, not is_open)
+
+    return layout.tags(tags, is_open)
+
+
+@app.callback(
     Output('files', 'children'),
     [
         Input('url', 'pathname'),
         Input('interval', 'n_intervals')
-    ]
+    ],
+    suppress_callback_exceptions=True
 )
 def render_files(pathname, n_intervals):
     filenames = engine.files(pathname)
@@ -77,12 +100,16 @@ def copy_file_link(n_clicks, filename, pathname):
 
 
 @app.callback(
-    Output('url', 'pathname'),
-    Input({'type': 'alert', 'index': ALL}, 'children'),
-    State('url', 'pathname'),
+    output=Output('url', 'pathname'),
+    inputs={
+        "args": (
+            Input({'type': 'alert', 'index': ALL}, 'children')
+        )
+    },
+    state={"pathname": State('url', 'pathname')},
     prevent_initial_call=True
 )
-def refresh_page(children, pathname):
+def refresh_page(args, pathname):
     return pathname
 
 
@@ -122,6 +149,43 @@ def upload_page(contents, filename, pathname):
 )
 def open_page_name_input(n_clicks1, n_clicks2, is_open):
     return not is_open
+
+
+@app.callback(
+    Output('add-tag-collapse', 'is_open'),
+    [
+        Input('manage-tags-collapse-button', 'n_clicks'),
+        Input('add-tag-button', 'n_clicks')
+    ],
+    [State('add-tag-collapse', 'is_open')],
+    prevent_initial_call=True
+)
+def open_tag_input(n_clicks1, n_clicks2, is_open):
+    return not is_open
+
+
+@app.callback(
+    Output({'type': 'alert', 'index': 'add-tag'}, 'children'),
+    Input('add-tag-button', 'n_clicks'),
+    State('add-tag-input', 'value'),
+    State('url', 'pathname'),
+    prevent_initial_call=True
+)
+def add_tag(n_clicks, value, pathname):
+    engine.add_tag(pathname, value)
+    return layout.alert("Tag added", "success")
+
+
+@app.callback(
+    Output({"type": "tag-name", "index": MATCH}, 'n_clicks'),
+    Input({"type": "tag-delete-button", "index": MATCH}, 'n_clicks'),
+    State('url', 'pathname'),
+    State({"type": "tag-name", "index": MATCH}, 'children'),
+    prevent_initial_call=True
+)
+def delete_tag(n_clicks, pathname, tag_name):
+    engine.delete_tag(pathname, tag_name)
+    return 0
 
 
 @app.callback(
@@ -238,7 +302,8 @@ def download_page(n_clicks, pathname):
     Output('download-notes', 'data'),
     Input('download-notes-button', 'n_clicks'),
     State('url', 'pathname'),
-    prevent_initial_call=True
+    prevent_initial_call=True,
+    suppress_callback_exceptions=True
 )
 def download_notes(n_clicks, pathname):
     fullpath = engine.archive_folder(pathname)

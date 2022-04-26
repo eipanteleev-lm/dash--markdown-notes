@@ -1,11 +1,14 @@
 from typing import List
 
+import models
+
 from pydantic import BaseSettings
 
 
 class BaseEngineSettings(BaseSettings):
     folder: str = "notes"
     note_filename: str = "note.md"
+    metadata_filename: str = "metadata.json"
     notes_archive_name: str = "notes"
 
 
@@ -23,7 +26,22 @@ class BaseEngine:
     def notes_tree(self, path: str):
         pass
 
-    def files_list(self, path: str) -> List[str]:
+    def files(self, path: str) -> List[str]:
+        pass
+
+    def metadata(self, path: str) -> models.Metadata:
+        pass
+
+    def add_metadata(self, path: str) -> models.Metadata:
+        pass
+
+    def tags(self, path: str) -> models.Tag:
+        pass
+
+    def add_tag(self, path: str) -> models.Tag:
+        pass
+
+    def delete_tag(self, tag: str) -> models.Tag:
         pass
 
     def add_note_directory(self, path: str, name: str):

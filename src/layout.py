@@ -1,12 +1,12 @@
 from typing import List
 
+from dash import dcc, html
+
 import dash_bootstrap_components as dbc
 
-import dash_core_components as dcc
-
-import dash_html_components as html
-
 import config
+
+import models
 
 
 def main():
@@ -23,10 +23,20 @@ def main():
                 [
                     html.Div(alerts(), id="alerts-wrapper"),
                     html.Div(id='bread-crumbs'),
-                    html.Div(control_buttons(), id='control-buttons-wrapper'),
+                    html.Div(
+                        control_buttons(),
+                        id='control-buttons-wrapper',
+                        className="mt-2 mb-2 py-1"
+                    ),
+                    html.Div(add_page_collapse(), id='add-page-collapse-wrapper'),
+                    html.Div(id="tags-wrapper", className="my-2"),
+                    html.Div(
+                        manage_tags_collapce(),
+                        id='manage-tags-collapse-wrapper',
+                        className="my-2"
+                    ),
                     html.Div(clear_page_modal(), id='clear-page-modal-wrapper'),
                     html.Div(delete_page_modal(), id='delete-page-modal-wrapper'),
-                    html.Div(add_page_collapse(), id='add-page-collapse-wrapper'),
                     html.Div(edit_page_collapce(), id='edit-page-collapse-wrapper'),
                     html.Div(id='page-content'),
                 ],
@@ -43,8 +53,48 @@ def alerts():
         html.Div(id={'type': 'alert', 'index': 'update-page'}),
         html.Div(id={'type': 'alert', 'index': 'clear-page'}),
         html.Div(id={'type': 'alert', 'index': 'delete-page'}),
-        html.Div(id={'type': 'alert', 'index': 'edit-page'})
+        html.Div(id={'type': 'alert', 'index': 'edit-page'}),
+        html.Div(id={'type': 'alert', 'index': 'add-tag'})
     ]
+
+
+def tags(taglist: List[models.Tag], dropable: bool=False):
+    return [
+        dbc.Badge(
+            [
+                dcc.Link(
+                    tag.name,
+                    id={"type": "tag-name", "index": tag.name},
+                    href="#",
+                    className="text-decoration-none text-white"
+                ),
+                html.Div(
+                    delete_tag_button(tag),
+                    id={
+                        "type": "tag-delete-button-wrapper",
+                        "index": tag.name
+                    },
+                    className=("" if dropable else "d-none")
+                )
+            ],
+            id={"type": "tag-badge", "index": tag.name},
+            color=tag.color,
+            className="me-2 position-relative"
+        )
+        for tag in taglist
+    ]
+
+
+def delete_tag_button(tag: models.Tag):
+    return dbc.Badge(
+        "X",
+        id={"type": "tag-delete-button", "index": tag.name},
+        color="danger",
+        pill=True,
+        text_color="white",
+        className="position-absolute top-0 start-100 translate-middle text-decoration-none",
+        href="#"
+    )
 
 
 def control_buttons():
@@ -57,20 +107,27 @@ def control_buttons():
             ),
             id='update-page-button',
             color="primary",
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
         ),
         dbc.Button(
             "Edit",
             id='edit-page-collapse-button',
             color="primary",
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
         ),
         dbc.Button(
             "Add page",
             id='add-page-collapse-button',
             outline=True,
             color="secondary",
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
+        ),
+        dbc.Button(
+            "Manage tags",
+            id="manage-tags-collapse-button",
+            outline=True,
+            color="secondary",
+            className="me-1"
         ),
         dbc.Button(
             [
@@ -80,7 +137,7 @@ def control_buttons():
             id='download-page-button',
             outline=True,
             color="secondary",
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
         ),
         dbc.Button(
             dcc.Upload(
@@ -91,21 +148,21 @@ def control_buttons():
             id='upload-file-button',
             color="secondary",
             outline=True,
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
         ),
         dbc.Button(
             "Clear page",
             id={"type": "modal-button", "index": "clear-page"},
             outline=True,
             color="secondary",
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
         ),
         dbc.Button(
             "Delete pages",
             id={"type": "modal-button", "index": "delete-page"},
             outline=True,
             color="danger",
-            className="mr-2 mt-2 mb-2"
+            className="me-1"
         ),
         html.Div(control_bar_tooltips(), id='tooltips-wrapper')
     ]
@@ -122,7 +179,7 @@ def add_page_collapse():
                                 id="add-page-input",
                                 placeholder="Type new page name",
                                 type="text",
-                                className="mr-2"
+                                className="me-2"
                             ),
                             width=11
                         ),
@@ -166,18 +223,44 @@ def edit_page_collapce():
                         'Save',
                         id='save-page-button',
                         color='primary',
-                        className="mr-2 mt-2 mb-2"
+                        className="me-2 mt-2 mb-2"
                     ),
                     dbc.Button(
                         'Cancel',
                         id='cancel-save-page-button',
                         color='secondary',
-                        className="mr-2 mt-2 mb-2"
+                        className="me-2 mt-2 mb-2"
                     )
                 ]
             )
         ),
         id="edit-page-collapse",
+        is_open=False,
+    )
+
+
+def manage_tags_collapce():
+    return dbc.Collapse(
+        dbc.Card(
+            dbc.CardBody(
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            dbc.Input(
+                                id="add-tag-input",
+                                className="me-2"
+                            ),
+                            width=11
+                        ),
+                        dbc.Col(
+                            dbc.Button("Add", id="add-tag-button"),
+                            width=1
+                        )
+                    ]
+                )
+            )
+        ),
+        id="add-tag-collapse",
         is_open=False,
     )
 
@@ -191,7 +274,7 @@ def clear_page_modal():
                 dbc.Button(
                     "Cancel",
                     id={"type": "cancel-button", "index": "clear-page"},
-                    className="mr-2"
+                    className="me-2"
                 ),
                 dbc.Button(
                     "Clear",
@@ -213,7 +296,7 @@ def delete_page_modal():
                 dbc.Button(
                     "Cancel",
                     id={"type": "cancel-button", "index": "delete-page"},
-                    className="mr-2"
+                    className="me-2"
                 ),
                 dbc.Button(
                     "Delete",
@@ -232,9 +315,9 @@ def slidebar_layout(tree, opened_list):
         slidebar = html.Details(
             [
                 html.Summary(slidebar),
-                html.Div(
+                html.Ul(
                     slidebar_tree(tree, '', opened_list),
-                    className="ml-4"
+                    className="ps-4 list-unstyled"
                 )
             ],
             open=True
@@ -243,7 +326,7 @@ def slidebar_layout(tree, opened_list):
     return html.Div([
         html.H2("Contents"),
         html.Hr(),
-        html.Div(slidebar),
+        html.Div(slidebar, className="text-wrap"),
         html.Div(id="files"),
         html.Hr(),
         dbc.Button(
@@ -254,7 +337,7 @@ def slidebar_layout(tree, opened_list):
             id="download-notes-button",
             outline=True,
             color="secondary",
-            className="mr-2 mt-2 mb-2"
+            className="me-2 mt-2 mb-2"
         ),
         tooltip(
             "Download all pages in current namespace (zip archive)",
@@ -279,23 +362,19 @@ def slidebar_tree(tree, path, opened_list):
             slidebar = html.Details(
                 [
                     html.Summary(slidebar),
-                    html.Div(
+                    html.Ul(
                         slidebar_tree(
                             entry_children,
                             path + '/' + entry_name,
                             (opened_list if opened_list else [])
                         ),
-                        className="ml-4"
+                        className="ps-4 list-unstyled"
                     )
                 ],
                 open=(entry_name == opened_entry)
             )
 
-            slidebar_list.append(slidebar)
-
-        else:
-            slidebar_list.append(slidebar)
-            slidebar_list.append(html.Br())
+        slidebar_list.append(html.Li(slidebar))
 
     return slidebar_list
 
@@ -332,14 +411,13 @@ def files(filenames: List[str]):
 
 
 def bread_crumbs(links: list):
-    crumbs = []
-    for link, href in links:
-        crumbs += [
-            '/',
-            dcc.Link(link, href=href, className='p-2')
-        ]
+    crumbs = [
+        {"label": link, "href": href, "external_link": True}
+        for link, href in links
+    ]
 
-    return html.Div(crumbs)
+    crumbs[-1]["active"] = True
+    return dbc.Breadcrumb(items=crumbs)
 
 
 def note(md: str):
