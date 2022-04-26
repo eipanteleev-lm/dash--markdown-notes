@@ -6,6 +6,16 @@ from urllib.parse import unquote
 
 import config
 
+import dash
+from dash._callback_context import CallbackContext
+
+
+def dash_triggered_ids(context: CallbackContext) -> List[str]:
+    return [
+        triggered["prop_id"].split('.')[0]
+        for triggered in context.triggered
+    ]
+
 
 def webpath_to_list(path: str) -> List[str]:
     return unquote(path).strip('/').split('/')

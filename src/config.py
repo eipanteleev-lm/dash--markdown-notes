@@ -32,14 +32,14 @@ SIDEBAR_STYLE = {
     "bottom": 0,
     "width": "16rem",
     "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
+    "backgroundColor": "#f8f9fa",
     "overflow": "auto",
-    "white-space": "nowrap"
+    "whiteSpace": "nowrap"
 }
 
 CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "2rem",
+    "marginLeft": "18rem",
+    "marginRight": "2rem",
     "padding": "2rem 1rem",
     "overflow": "auto"
 }

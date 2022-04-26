@@ -1,5 +1,7 @@
 from typing import List
 
+import models
+
 from pydantic import BaseSettings
 
 
@@ -25,6 +27,21 @@ class BaseEngine:
         pass
 
     def files(self, path: str) -> List[str]:
+        pass
+
+    def metadata(self, path: str) -> models.Metadata:
+        pass
+
+    def add_metadata(self, path: str) -> models.Metadata:
+        pass
+
+    def tags(self, path: str) -> models.Tag:
+        pass
+
+    def add_tag(self, path: str) -> models.Tag:
+        pass
+
+    def delete_tag(self, tag: str) -> models.Tag:
         pass
 
     def add_note_directory(self, path: str, name: str):
