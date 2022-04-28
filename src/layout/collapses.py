@@ -15,12 +15,11 @@ def add_page_collapse():
                                 placeholder="Type new page name",
                                 type="text",
                                 className="me-2"
-                            ),
-                            width=11
+                            )
                         ),
                         dbc.Col(
                             dbc.Button("Add", id="add-page-button"),
-                            width=1
+                            width="auto"
                         )
                     ]
                 )
@@ -85,12 +84,11 @@ def manage_tags_collapce():
                                 id="add-tag-input",
                                 placeholder="Type new tag name",
                                 className="me-2"
-                            ),
-                            width=10
+                            )
                         ),
                         dbc.Col(
                             dbc.Button("Add", id="add-tag-button"),
-                            width=1
+                            width="auto"
                         )
                     ]
                 )
