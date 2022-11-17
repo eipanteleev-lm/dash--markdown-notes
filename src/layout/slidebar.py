@@ -14,10 +14,14 @@ def slidebar_tree(tree, path, opened_list):
         opened_entry = opened_list.pop(0)
 
     for entry_name, entry_children in tree:
-        slidebar = dcc.Link(
+        link = dcc.Link(
             entry_name,
             href=path + '/' + entry_name
         )
+        slidebar = link if entry_children else [
+            html.I(className="bi bi-circle-fill me-2", style={"font-size": "7px"}),
+            link
+        ]
 
         if entry_children:
             slidebar = html.Details(
