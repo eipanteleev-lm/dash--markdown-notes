@@ -2,7 +2,7 @@ import base64
 import os
 import re
 from typing import List
-from urllib.parse import unquote
+from urllib.parse import unquote, quote
 
 import config
 
@@ -54,4 +54,4 @@ def parse_file(contents):
 
 def file_link(path: str, filename: str) -> str:
     fullpath = webpath_to_list(path)
-    return "/file/" + "/".join(fullpath) + "/" + filename
+    return quote("/file/" + "/".join(fullpath) + "/" + filename)
