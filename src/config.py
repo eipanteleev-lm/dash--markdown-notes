@@ -23,7 +23,7 @@ server = Flask(__name__)
 app = dash.Dash(
     __name__,
     server=server,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP],
     assets_folder=assets_folder,
     title='Markdown Notes'
 )
