@@ -35,9 +35,9 @@ def edit_page_collapce():
         dbc.Card(
             dbc.CardBody(
                 [
-                    dbc.Row(
+                    dbc.Tabs(
                         [
-                            dbc.Col(
+                            dbc.Tab(
                                 dbc.Textarea(
                                     id="edit-page-textarea",
                                     spellCheck=True,
@@ -45,11 +45,13 @@ def edit_page_collapce():
                                         "height": "100%"
                                     }
                                 ),
+                                label='Edit'
                             ),
-                            dbc.Col(
+                            dbc.Tab(
                                 dcc.Markdown(
                                     id="edit-page-preview"
-                                )
+                                ),
+                                label='Preview'
                             )
                         ]
                     ),
