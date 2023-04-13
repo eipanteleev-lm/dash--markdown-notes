@@ -1,3 +1,3 @@
-# This is empty page
+# {{ page }}
 
 Click `Update page` to add something interesting :)

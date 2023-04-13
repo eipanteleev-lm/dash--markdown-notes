@@ -270,7 +270,7 @@ def add_page(n_clicks, value, pathname):
             "warning"
         )
 
-    template = repo.template('default')
+    template = repo.template('default', page=value)
     engine.add_note(path, template.encode('utf-8'))
 
     return layout.alerts.alert("Page successfully created", "success")
